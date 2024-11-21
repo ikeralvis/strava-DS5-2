@@ -3,12 +3,30 @@ package es.deusto.sd.strava.entity;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+@Entity
 public class Reto {
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String deporte;
+
+    @Column(nullable = false)
     private float objetivoDistancia;
+
+    @Column(nullable = false)
     private int objetivoTiempo;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDate fechaInicio;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDate fechaFin;
 
     public Reto() {

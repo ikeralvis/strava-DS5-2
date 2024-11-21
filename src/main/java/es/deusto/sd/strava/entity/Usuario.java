@@ -4,17 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 
 
+@Entity
 public class Usuario {
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private float peso;
+
+    @Column(nullable = false)
     private float altura;
+
+    @Column(nullable = false)
     private String fechaNacimiento;
+
+    @Column(nullable = false)
     private int frecuenciaCardiacaMax;
+
+    @Column(nullable = false)
     private int frecuenciaCardiacaReposo;
-    private List<Entrenamiento> entrenamientos;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Entrenamiento> entrenamientos = new ArrayList<>();
+
     private List<Reto> retosAceptados;
     private TipoLogin tipoLogin;
 
