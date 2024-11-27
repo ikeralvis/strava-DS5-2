@@ -9,16 +9,11 @@ public class GoogleService {
 
         // REGISTRO: METODO QUE DEVUELVE UN BOOLEANO SI LA CONTRASEÑA DEL USUARIO ES CORRECTA
         public static Boolean comprobarEmailContrasena(String email, String password) {
-            if (email != "" && password != "") {
+            if (email != null && !email.isEmpty() && password != null && !password.isEmpty()) {
                 return true;
             } else {
                 return false;
             }
-        }
-
-        // LOGIN :METODO QUE DEVUELVE UN TOKEN ALEATORIO SI EL CORREO Y EL EMAIL EXISTEN EN LA BD
-        public static synchronized String loginToken(String email, String password) {
-            return Long.toHexString(System.currentTimeMillis());
         }
 
 }

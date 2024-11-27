@@ -8,8 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+
 
 @Entity
 public class Reto {
@@ -30,10 +29,10 @@ public class Reto {
     @Column(nullable = false)
     private int objetivoTiempo;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private LocalDate fechaInicio;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private LocalDate fechaFin;
 
     public Reto() {
