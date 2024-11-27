@@ -1,7 +1,9 @@
 package es.deusto.sd.strava.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.strava.dao.UsuarioRepository;
 import es.deusto.sd.strava.entity.TipoLogin;
 import es.deusto.sd.strava.entity.Usuario;
 
@@ -12,6 +14,10 @@ import java.util.Optional;
 
 @Service
 public class UsuarioService {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     // REPOSITORIO DE USUARIOS Y TOKENS
     private static Map<String, Usuario> usuarios = new HashMap<>();
     private static Map<String, Usuario> tokenes = new HashMap<>();
@@ -34,17 +40,21 @@ public class UsuarioService {
     // AÑADIR USUARIO
     public void añadirUsuario(Usuario user) {
         if (user != null) {
-            usuarios.putIfAbsent(user.getEmail(), user);
+            //usuarios.putIfAbsent(user.getEmail(), user);
+            usuarioRepository.save(user);
+
         }
     }
 
     // LOGIN Y GENERAR TOKEN
     public Optional<String> login(String email, String password, TipoLogin tipoLogin) {
-        Usuario usuario = usuarios.get(email); // Ya hemos comprobado que el usuario existe anteriormente
-        
-        if (usuario == null) {
+       // Usuario usuario = usuarios.get(email); // Ya hemos comprobado que el usuario existe anteriormente
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email); 
+        if (usuarioOpt == null) {
             return Optional.empty();
         }
+
+        Usuario usuario = usuarioOpt.get();
 
         boolean credencialesValidas;
 
@@ -91,12 +101,14 @@ public class UsuarioService {
 
     // EXISTE USUARIO
     public Boolean existeUsuario(String email) {
-        return usuarios.containsKey(email);
+        //return usuarios.containsKey(email);
+        return usuarioRepository.existsByEmail(email); 
     }
 
     // CONSEGUIR TODOS LOS USUARIOS ADMIN
     public List<Usuario> consultarUsuarios() {
-        return usuarios.values().stream().toList();
+        //return usuarios.values().stream().toList();
+        return usuarioRepository.findAll(); 
     }
 
 }

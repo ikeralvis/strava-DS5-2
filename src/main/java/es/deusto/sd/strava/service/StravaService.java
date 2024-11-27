@@ -4,41 +4,58 @@ import java.time.LocalDate;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.strava.dao.EntrenamientoRepository;
+import es.deusto.sd.strava.dao.RetoRepository;
+import es.deusto.sd.strava.dao.UsuarioRepository;
 import es.deusto.sd.strava.entity.Entrenamiento;
 import es.deusto.sd.strava.entity.Reto;
 import es.deusto.sd.strava.entity.Usuario;
 
 @Service
 public class StravaService {
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EntrenamientoRepository entrenamientoRepository;
+
+    @Autowired
+    private RetoRepository retoRepository;
+
     List<Reto> listaRetos = new ArrayList<>();
 
     // FUNCION PARA CREAR UNA SESIÓN DE ENTRENAMIENTO EN USUARIO
     public String crearEntrenamiento(Entrenamiento entrenamiento, Usuario usuario) {
-        usuario.getEntrenamientos().add(entrenamiento);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            usuario.getEntrenamientos().add(entrenamiento);
+            entrenamientoRepository.save(entrenamiento);
         return "El entremaniento \"" + entrenamiento.getTitulo() + "\" ha sido registrado con éxito";
     }
 
     // OBTENER TODOS LOS ENTRENAMIENTOS DE UN USUARIO
     public List<Entrenamiento> consultarEntrenamientos(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin) {
-        // Validar que el usuario tiene entrenamientos
-        if (usuario.getEntrenamientos().isEmpty()) {
-            return new ArrayList<>(); // Retorna lista vacía si no hay entrenamientos
-        }
-        // Filtrar entrenamientos por rango de fechas
-        List<Entrenamiento> entrenamientosFiltrados = new ArrayList<>();
-        for (Entrenamiento entrenamiento : usuario.getEntrenamientos()) {
-            LocalDate fechaEntrenamiento = entrenamiento.getFechaInicio();
-            if (fechaEntrenamiento.isAfter(fechaInicio) && fechaEntrenamiento.isBefore(fechaFin)) {
-                entrenamientosFiltrados.add(entrenamiento);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            // Filtrar entrenamientos según fechas
+            List<Entrenamiento> entrenamientosFiltrados = new ArrayList<>();
+            for (Entrenamiento entrenamiento : usuario.getEntrenamientos()) {
+                LocalDate fechaEntrenamiento = entrenamiento.getFechaInicio();
+                if (fechaEntrenamiento.isAfter(fechaInicio) && fechaEntrenamiento.isBefore(fechaFin)) {
+                    entrenamientosFiltrados.add(entrenamiento);
+                }
             }
-        }
         // Ordenar los entrenamientos por fecha de inicio de manera descendente
         entrenamientosFiltrados.sort((e1, e2) -> e2.getFechaInicio().compareTo(e1.getFechaInicio()));
 
@@ -47,6 +64,8 @@ public class StravaService {
             return entrenamientosFiltrados.subList(0, 5);
         }
         return entrenamientosFiltrados;
+        }
+        return Collections.emptyList();
 
     }
 
