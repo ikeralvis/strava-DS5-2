@@ -43,6 +43,7 @@ public class StravaService {
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
             usuario.getEntrenamientos().add(entrenamiento);
+            entrenamiento.setUsuario(usuario);
             entrenamientoRepository.save(entrenamiento);
         return "El entremaniento \"" + entrenamiento.getTitulo() + "\" ha sido registrado con éxito";
     }

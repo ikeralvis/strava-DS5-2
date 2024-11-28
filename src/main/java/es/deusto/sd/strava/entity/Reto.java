@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 
 
 @Entity
@@ -39,12 +40,8 @@ public class Reto {
     @Column(nullable = false)
     private LocalDate fechaFin;
 
-    // Colección de participantes en el reto
-    @ElementCollection
-    //Esto es para crear una tabla intermedia que relaciona los participantes con el reto
-    @CollectionTable(name = "participantes_Reto", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "participante")
-	private List<Integer> participantes = new ArrayList<>();
+   @ManyToMany(mappedBy = "retosAceptados")
+    private List<Usuario> participantes = new ArrayList<>();
 
     public Reto() {
     }

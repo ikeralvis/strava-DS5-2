@@ -13,7 +13,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 
@@ -45,11 +47,12 @@ public class Usuario {
     @Column(nullable = false)
     private int frecuenciaCardiacaReposo;
 
-    @OneToMany(mappedBy = "titulo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<Entrenamiento> entrenamientos = new ArrayList<>();
 	
-	@OneToMany(mappedBy = "nombre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<Reto> retosAceptados = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "usuario_reto", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "reto_id"))
+    private List<Reto> retosAceptados = new ArrayList<>();
 
 
     // Relación con TipoLogin (esto depende de la implementación del enum TipoLogin)
