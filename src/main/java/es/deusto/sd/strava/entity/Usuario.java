@@ -7,10 +7,13 @@ import java.util.Objects;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+
 import jakarta.persistence.OneToMany;
 
 
@@ -18,8 +21,8 @@ import jakarta.persistence.OneToMany;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
     @Column(nullable = false)
     private String nombre;
@@ -42,22 +45,23 @@ public class Usuario {
     @Column(nullable = false)
     private int frecuenciaCardiacaReposo;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "usuario_id") // Aquí defines la clave foránea en Entrenamiento
-    private List<Entrenamiento> entrenamientos = new ArrayList<>();
+    @OneToMany(mappedBy = "titulo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<Entrenamiento> entrenamientos = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "nombre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<Reto> retosAceptados = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "usuario_id") // Aquí defines la clave foránea en Reto
-    private List<Reto> retosAceptados;
 
-    @Column(nullable = false)
+    // Relación con TipoLogin (esto depende de la implementación del enum TipoLogin)
+    @Enumerated(EnumType.STRING)
     private TipoLogin tipoLogin;
 
     public Usuario() {
     }
 
-    public Usuario(String nombre, String email, float peso, float altura, String fechaNacimiento,
+    public Usuario(int id, String nombre, String email, float peso, float altura, String fechaNacimiento,
             int frecuenciaCardiacaMax, int frecuenciaCardiacaReposo, TipoLogin tipoLogin) {
+                this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.peso = peso;
@@ -70,13 +74,18 @@ public class Usuario {
         this.tipoLogin = tipoLogin;
     }
 
-    public Usuario(String nombre, String email, String fechaNacimiento, TipoLogin tipoLogin) {
+    public Usuario(int id,String nombre, String email, String fechaNacimiento, TipoLogin tipoLogin) {
+        this.id=id;
         this.nombre = nombre;
         this.email = email;
         this.fechaNacimiento = fechaNacimiento;
         this.tipoLogin = tipoLogin;
         this.entrenamientos = new ArrayList<>();
         this.retosAceptados = new ArrayList<>();
+    }
+
+    public int getId(){
+        return id;
     }
 
     public String getNombre() {

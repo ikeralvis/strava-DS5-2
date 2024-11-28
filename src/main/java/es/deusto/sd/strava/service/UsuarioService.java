@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import es.deusto.sd.strava.dao.UsuarioRepository;
+import es.deusto.sd.strava.dao.RetoRepository;
+import es.deusto.sd.strava.entity.Reto;
 import es.deusto.sd.strava.entity.TipoLogin;
 import es.deusto.sd.strava.entity.Usuario;
 
@@ -17,7 +19,10 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private RetoRepository retoRepository;
 
+    // REPOSITORIO DE USUARIOS Y TOKENS
     // REPOSITORIO DE USUARIOS Y TOKENS
     private static Map<String, Usuario> tokenes = new HashMap<>();
 
@@ -38,12 +43,18 @@ public class UsuarioService {
 
     // AÑADIR USUARIO
     public void añadirUsuario(Usuario user) {
-        if (user != null) {
-            //usuarios.putIfAbsent(user.getEmail(), user);
-            usuarioRepository.save(user);
-
+    if (user != null) {
+        // Guardar los retos del usuario si existen
+        if (user.getRetosAceptados() != null) {
+            for (Reto reto : user.getRetosAceptados()) {
+                retoRepository.save(reto); // Guardar reto en la base de datos
+            }
         }
+
+        // Guardar el usuario después de los retos
+        usuarioRepository.save(user);
     }
+}
 
     // LOGIN Y GENERAR TOKEN
     public Optional<String> login(String email, String password, TipoLogin tipoLogin) {

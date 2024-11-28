@@ -2,6 +2,7 @@ package es.deusto.sd.strava.facade;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    private final AtomicInteger generadorID = new AtomicInteger(0);
+    
 
 
     //FUNCION PARA REGISTRAR UN USUARIO
@@ -65,7 +69,7 @@ public class UsuarioController {
                 try {
                     if (usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(),
                             credenciales.getTipoLogin())) {
-                        Usuario usuario = new Usuario(nombre, credenciales.getEmail(), peso, altura, fechaNacimiento, frecuenciaCardiacaMax, frecuenciaCardiacaReposo, credenciales.getTipoLogin());
+                        Usuario usuario = new Usuario(generadorID.incrementAndGet(), nombre, credenciales.getEmail(), peso, altura, fechaNacimiento, frecuenciaCardiacaMax, frecuenciaCardiacaReposo, credenciales.getTipoLogin());
                         usuarioService.añadirUsuario(usuario);
                         return new ResponseEntity<>("El usuario: \"" + nombre + "\" con email: \"" + credenciales.getEmail() + "\" registrado exitosamente", HttpStatus.OK);
                     } else {

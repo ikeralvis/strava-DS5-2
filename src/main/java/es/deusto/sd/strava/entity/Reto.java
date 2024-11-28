@@ -1,13 +1,17 @@
 package es.deusto.sd.strava.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 
 
 @Entity
@@ -15,7 +19,7 @@ public class Reto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Column(nullable = false)
     private String nombre;
@@ -34,6 +38,13 @@ public class Reto {
 
     @Column(nullable = false)
     private LocalDate fechaFin;
+
+    // Colección de participantes en el reto
+    @ElementCollection
+    //Esto es para crear una tabla intermedia que relaciona los participantes con el reto
+    @CollectionTable(name = "participantes_Reto", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "participante")
+	private List<Integer> participantes = new ArrayList<>();
 
     public Reto() {
     }

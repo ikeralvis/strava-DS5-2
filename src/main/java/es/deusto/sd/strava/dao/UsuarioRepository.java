@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import es.deusto.sd.strava.entity.Usuario;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByEmail(String email);
     Boolean existsByEmail(String email);
 
