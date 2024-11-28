@@ -19,7 +19,6 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     // REPOSITORIO DE USUARIOS Y TOKENS
-    private static Map<String, Usuario> usuarios = new HashMap<>();
     private static Map<String, Usuario> tokenes = new HashMap<>();
 
     // LOGIN :METODO QUE DEVUELVE UN TOKEN ALEATORIO SI EL CORREO Y EL EMAIL EXISTEN
@@ -91,13 +90,13 @@ public class UsuarioService {
     }
 
     // OBTENER USUARIO POR EMAIL
-    public Optional<Usuario> usuarioPorEmail(String email) {
+    /*public Optional<Usuario> usuarioPorEmail(String email) {
         if (!usuarios.containsKey(email)) {
             return Optional.empty();
         } else {
             return Optional.of(usuarios.get(email));
         }
-    }
+    }*/
 
     // EXISTE USUARIO
     public Boolean existeUsuario(String email) {

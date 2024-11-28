@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import es.deusto.sd.strava.dao.EntrenamientoRepository;
@@ -22,30 +22,36 @@ import es.deusto.sd.strava.entity.Usuario;
 
 @Service
 public class StravaService {
-    @Autowired
+    
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private EntrenamientoRepository entrenamientoRepository;
-
-    @Autowired
     private RetoRepository retoRepository;
+
+    private StravaService(UsuarioRepository usuarioRepository, EntrenamientoRepository entrenamientoRepository,
+            RetoRepository retoRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.entrenamientoRepository = entrenamientoRepository;
+        this.retoRepository = retoRepository;
+    }
 
     List<Reto> listaRetos = new ArrayList<>();
 
     // FUNCION PARA CREAR UNA SESIÓN DE ENTRENAMIENTO EN USUARIO
-    public String crearEntrenamiento(Entrenamiento entrenamiento, Usuario usuario) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+    public String crearEntrenamiento(Entrenamiento entrenamiento, Usuario u) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(u.getEmail());
+        
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
             usuario.getEntrenamientos().add(entrenamiento);
             entrenamientoRepository.save(entrenamiento);
         return "El entremaniento \"" + entrenamiento.getTitulo() + "\" ha sido registrado con éxito";
     }
+    return "El usuario no existe";
+    }
 
     // OBTENER TODOS LOS ENTRENAMIENTOS DE UN USUARIO
-    public List<Entrenamiento> consultarEntrenamientos(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
+    public List<Entrenamiento> consultarEntrenamientos(Usuario u, LocalDate fechaInicio, LocalDate fechaFin) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(u.getEmail());
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
             // Filtrar entrenamientos según fechas
@@ -71,16 +77,15 @@ public class StravaService {
 
     // OBTENER TODOS LOS RETOS
     public List<Reto> consultarRetos() {
-        if (listaRetos.isEmpty()) {
-            return null;
-        } else {
-            return listaRetos;
+        if(retoRepository.findAll().isEmpty()){
+            return Collections.emptyList();
         }
+        return retoRepository.findAll();
     }
 
     public List<Reto> consultarRetosActivos(LocalDate fecha, String deporte) {
         List<Reto> retosActivos = new ArrayList<>();
-        for (Reto reto : listaRetos) {
+        for (Reto reto : retoRepository.findAll()) {
             if (reto.getFechaFin().isAfter(fecha)) {
                 // Si se especifica deporte, filtrar también por deporte
                 if (deporte == null || reto.getDeporte().equalsIgnoreCase(deporte)) {
@@ -98,7 +103,7 @@ public class StravaService {
 
     public String crearReto(Reto reto) {
         if (reto != null) {
-            listaRetos.add(reto);
+            retoRepository.save(reto);
             return "Reto registrado con éxito";
         } else {
             return "Reto no puede ser nulo";
@@ -107,7 +112,7 @@ public class StravaService {
 
     public String aceptarReto(String nombreReto, Usuario usuario) {
         if (nombreReto != null && usuario != null) {
-            for (Reto reto : listaRetos) {
+            for (Reto reto : retoRepository.findAll()) {
                 if (reto.getNombre().equals(nombreReto)) {
                     usuario.getRetosAceptados().add(reto);
                     return "Reto aceptado con éxito";
