@@ -10,12 +10,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import es.deusto.sd.strava.dao.EntrenamientoRepository;
+import es.deusto.sd.strava.dao.RetoRepository;
+import es.deusto.sd.strava.dao.UsuarioRepository;
 import es.deusto.sd.strava.entity.Entrenamiento;
 import es.deusto.sd.strava.entity.Reto;
 import es.deusto.sd.strava.entity.Usuario;
 import es.deusto.sd.strava.entity.TipoLogin;
-import es.deusto.sd.strava.service.StravaService;
-import es.deusto.sd.strava.service.UsuarioService;
 
 @Configuration
 public class DatosMuestra {
@@ -23,7 +24,7 @@ public class DatosMuestra {
 	private static final Logger logger = LoggerFactory.getLogger(DatosMuestra.class);
 	
     @Bean
-    CommandLineRunner initData(StravaService stravaService, UsuarioService UsuarioService) {
+    CommandLineRunner initData(EntrenamientoRepository entrenamientoRepository, UsuarioRepository usuarioRepository, RetoRepository retoRepository) {
 		return args -> {			
 
 			// Entrenamientos de muestra
@@ -38,8 +39,8 @@ public class DatosMuestra {
 			retos.add(maraton);
 			retos.add(triatlon);
 
-			stravaService.crearReto(maraton);
-			stravaService.crearReto(triatlon);
+			retoRepository.save(maraton);
+			retoRepository.save(triatlon);
 			logger.info("Retos registrados!");
 
 			// Usuarios de muestra
@@ -52,16 +53,18 @@ public class DatosMuestra {
 			cristianoRonaldo.setEntrenamientos(entrenamientos);
 			cristianoRonaldo.setRetosAceptados(retos);
 
-			UsuarioService.añadirUsuario(usainBolt);
-			UsuarioService.añadirUsuario(michaelPhelps);
-			UsuarioService.añadirUsuario(serenaWilliams);
-			UsuarioService.añadirUsuario(lionelMessi);
-			UsuarioService.añadirUsuario(lebronJames);
-			UsuarioService.añadirUsuario(cristianoRonaldo);
+			usuarioRepository.save(usainBolt);
+			usuarioRepository.save(michaelPhelps);
+			usuarioRepository.save(serenaWilliams);
+			usuarioRepository.save(lionelMessi);
+			usuarioRepository.save(lebronJames);
+			usuarioRepository.save(cristianoRonaldo);
 			logger.info("Usuarios registrados!");
 
-			stravaService.crearEntrenamiento(carreraMañana,cristianoRonaldo);
-			stravaService.crearEntrenamiento(ciclismoRuta,cristianoRonaldo);
+			carreraMañana.setUsuario(cristianoRonaldo);
+			ciclismoRuta.setUsuario(cristianoRonaldo);
+			entrenamientoRepository.save(carreraMañana);
+			entrenamientoRepository.save(ciclismoRuta);
 			logger.info("Entrenamientos registrados!");
 
 		};

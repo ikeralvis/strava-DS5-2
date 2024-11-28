@@ -152,7 +152,7 @@ public class UsuarioController {
             if(usuarios.isEmpty()){
                 return ResponseEntity.noContent().build();
             }
-            return new ResponseEntity<>(usuarioService.consultarUsuarios(), HttpStatus.OK);
+            return new ResponseEntity<>(usuarios, HttpStatus.OK);
         } catch (Exception e){
             return ResponseEntity.status(500).build();
         }

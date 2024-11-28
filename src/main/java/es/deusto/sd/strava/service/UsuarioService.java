@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -116,7 +115,8 @@ public class UsuarioService {
 
     // CONSEGUIR TODOS LOS USUARIOS
     public List<Usuario> consultarUsuarios() {
-        return usuarioRepository.findAll(); 
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return usuarios; 
     }
 
 }

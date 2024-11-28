@@ -55,7 +55,6 @@ public class Usuario {
     private List<Reto> retosAceptados = new ArrayList<>();
 
 
-    // Relación con TipoLogin (esto depende de la implementación del enum TipoLogin)
     @Enumerated(EnumType.STRING)
     private TipoLogin tipoLogin;
 
