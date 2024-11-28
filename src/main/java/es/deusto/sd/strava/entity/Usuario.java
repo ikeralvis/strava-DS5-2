@@ -50,7 +50,7 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<Entrenamiento> entrenamientos = new ArrayList<>();
 	
-    @ManyToMany
+    @ManyToMany (fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_reto", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "reto_id"))
     private List<Reto> retosAceptados = new ArrayList<>();
 

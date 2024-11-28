@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -23,16 +24,14 @@ public class UsuarioService {
     private RetoRepository retoRepository;
 
     // REPOSITORIO DE USUARIOS Y TOKENS
-    // REPOSITORIO DE USUARIOS Y TOKENS
     private static Map<String, Usuario> tokenes = new HashMap<>();
 
-    // LOGIN :METODO QUE DEVUELVE UN TOKEN ALEATORIO SI EL CORREO Y EL EMAIL EXISTEN
-    // EN LA BD
+    // LOGIN :METODO QUE DEVUELVE UN TOKEN ALEATORIO PARA EL USUARIO
     public static synchronized String loginToken(String email, String password) {
         return Long.toHexString(System.currentTimeMillis());
     }
 
-    // REGISTRAR USUARIO
+    // COMPROBAR SI EL USUARIO ES REGISTRABLE
     public Boolean esRegistable(String email, String contraseña, TipoLogin tipoLogin) {
         if (tipoLogin == TipoLogin.GOOGLE) {
             return GoogleService.comprobarEmailContrasena(email, contraseña);
@@ -115,9 +114,8 @@ public class UsuarioService {
         return usuarioRepository.existsByEmail(email); 
     }
 
-    // CONSEGUIR TODOS LOS USUARIOS ADMIN
+    // CONSEGUIR TODOS LOS USUARIOS
     public List<Usuario> consultarUsuarios() {
-        //return usuarios.values().stream().toList();
         return usuarioRepository.findAll(); 
     }
 
