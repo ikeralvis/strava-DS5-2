@@ -8,6 +8,8 @@ import es.deusto.sd.strava.dao.RetoRepository;
 import es.deusto.sd.strava.entity.Reto;
 import es.deusto.sd.strava.entity.TipoLogin;
 import es.deusto.sd.strava.entity.Usuario;
+import es.deusto.sd.strava.external.ILoginServiceGateway;
+import es.deusto.sd.strava.external.LoginServiceFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,9 @@ import java.util.Optional;
 
 @Service
 public class UsuarioService {
+
+    LoginServiceFactory loginServiceFactory = new LoginServiceFactory();
+
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -48,7 +53,6 @@ public class UsuarioService {
                 retoRepository.save(reto); // Guardar reto en la base de datos
             }
         }
-
         // Guardar el usuario después de los retos
         usuarioRepository.save(user);
     }
@@ -56,31 +60,26 @@ public class UsuarioService {
 
     // LOGIN Y GENERAR TOKEN
     public Optional<String> login(String email, String password, TipoLogin tipoLogin) {
-       // Usuario usuario = usuarios.get(email); // Ya hemos comprobado que el usuario existe anteriormente
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email); 
-        if (usuarioOpt == null) {
-            return Optional.empty();
-        }
 
-        Usuario usuario = usuarioOpt.get();
+        if (usuarioOpt.isPresent() && loginServiceFactory.getLoginServiceGateway(usuarioOpt.get().getTipoLogin()).login(email, password)) {
+			String token = loginToken(email, password);
+			tokenes.put(token, usuarioOpt.get());   
+			return Optional.of(token); 		
+		}	
+    	return Optional.empty();
 
-        boolean credencialesValidas;
+        //boolean credencialesValidas;
 
-        if (tipoLogin == TipoLogin.GOOGLE) {
-            credencialesValidas = GoogleService.comprobarEmailContrasena(email, password);
+        /*if (tipoLogin == TipoLogin.GOOGLE) {
+            credencialesValidas = googleServiceGateway.login(email, password);
         } else if (tipoLogin == TipoLogin.META) {
             credencialesValidas = MetaService.comprobarEmailContrasena(email, password);
         } else {
             throw new IllegalArgumentException("Tipo de login no soportado: " + tipoLogin);
-        }
-
-        if (credencialesValidas) {
-            String token = loginToken(email, password);
-            tokenes.put(token, usuario);
-            return Optional.of(token);
-        } else {
-            return Optional.empty();
-        }
+        }*/
+            
+            
     }
 
     // LOGOUT Y BORRAR TOKEN

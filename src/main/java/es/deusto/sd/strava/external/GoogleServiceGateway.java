@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.springframework.web.client.RestTemplate;
 
+import es.deusto.sd.strava.entity.TipoLogin;
+
 @Component
 public class GoogleServiceGateway implements ILoginServiceGateway {
     private final String GOOGLE_API_URL = "http://localhost:8081/auth/login";
@@ -36,5 +38,12 @@ public class GoogleServiceGateway implements ILoginServiceGateway {
             return false;
         }
 
+    }
+
+
+
+    @Override
+    public TipoLogin getTipoLogin(){
+        return TipoLogin.GOOGLE;
     }
 }
