@@ -8,7 +8,7 @@ import es.deusto.sd.strava.dao.RetoRepository;
 import es.deusto.sd.strava.entity.Reto;
 import es.deusto.sd.strava.entity.TipoLogin;
 import es.deusto.sd.strava.entity.Usuario;
-import es.deusto.sd.strava.external.ILoginServiceGateway;
+
 import es.deusto.sd.strava.external.LoginServiceFactory;
 
 import java.util.HashMap;
@@ -21,14 +21,18 @@ public class UsuarioService {
 
     LoginServiceFactory loginServiceFactory = new LoginServiceFactory();
 
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    
     @Autowired
     private RetoRepository retoRepository;
 
     // REPOSITORIO DE USUARIOS Y TOKENS
     private static Map<String, Usuario> tokenes = new HashMap<>();
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
 
     // LOGIN :METODO QUE DEVUELVE UN TOKEN ALEATORIO PARA EL USUARIO
     public static synchronized String loginToken(String email, String password) {
