@@ -11,6 +11,8 @@ import java.util.StringTokenizer;
 import org.springframework.data.jpa.repository.Meta;
 import org.springframework.stereotype.Component;
 
+import es.deusto.sd.strava.entity.TipoLogin;
+
 import java.util.Scanner;
 
 @Component
@@ -55,6 +57,10 @@ public class MetaServiceGateway implements ILoginServiceGateway {
         // return translation;
         //return (tokenizer.nextToken().equals("OK")) ? tokenizer.nextToken() : "ERROR";
         return true;
+    }
+
+    public TipoLogin getTipoLogin() {
+        return TipoLogin.META;
     }
 
     //ESTO LO TIENE QUE HACER EL SERVICE O EL FACTORIA
