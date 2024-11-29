@@ -41,11 +41,13 @@ public class UsuarioService {
 
     // COMPROBAR SI EL USUARIO ES REGISTRABLE
     public Boolean esRegistable(String email, String contraseña, TipoLogin tipoLogin) {
-        if (tipoLogin == TipoLogin.GOOGLE) {
-            return GoogleService.comprobarEmailContrasena(email, contraseña);
-        } else {
-            return MetaService.comprobarEmailContrasena(email, contraseña);
-        }
+        loginServiceFactory.getLoginServiceGateway(tipoLogin).comprobarEmail(email);
+        //if (tipoLogin == TipoLogin.GOOGLE) {
+            return loginServiceFactory.getLoginServiceGateway(TipoLogin.GOOGLE).comprobarEmail(email);
+        //} else {
+           // return MetaService.comprobarEmailContrasena(email, contraseña);
+
+        //}
     }
 
     // AÑADIR USUARIO

@@ -10,8 +10,7 @@ import java.util.StringTokenizer;
 
 import org.springframework.data.jpa.repository.Meta;
 import org.springframework.stereotype.Component;
-
-import java.util.Scanner;
+ 
 
 @Component
 public class MetaServiceGateway implements ILoginServiceGateway {
@@ -56,6 +55,13 @@ public class MetaServiceGateway implements ILoginServiceGateway {
         //return (tokenizer.nextToken().equals("OK")) ? tokenizer.nextToken() : "ERROR";
         return true;
     }
+
+    @Override
+    public boolean comprobarEmail(String email) {
+        return true;
+    }
+
+    
 
     //ESTO LO TIENE QUE HACER EL SERVICE O EL FACTORIA
     

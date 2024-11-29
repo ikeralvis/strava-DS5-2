@@ -12,8 +12,6 @@ import java.util.Map;
 
 import org.springframework.web.client.RestTemplate;
 
-import es.deusto.sd.strava.entity.TipoLogin;
-
 @Component
 public class GoogleServiceGateway implements ILoginServiceGateway {
     private final String GOOGLE_API_URL = "http://localhost:8081/auth/login";
@@ -40,10 +38,24 @@ public class GoogleServiceGateway implements ILoginServiceGateway {
 
     }
 
+    public boolean comprobarEmail(String email) {
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, String> requestBody = Map.of("email", email);
 
+        HttpHeaders headers = new HttpHeaders();
 
-    @Override
-    public TipoLogin getTipoLogin(){
-        return TipoLogin.GOOGLE;
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<Map<String, String>> response = restTemplate.exchange(GOOGLE_API_URL, HttpMethod.POST,
+                requestEntity, new ParameterizedTypeReference<Map<String, String>>() {
+                });
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
