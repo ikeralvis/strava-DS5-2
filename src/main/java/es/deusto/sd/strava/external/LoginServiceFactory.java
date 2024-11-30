@@ -7,8 +7,8 @@ public class LoginServiceFactory {
 		switch (tipoLogin) {
 		case GOOGLE:
 			return new GoogleServiceGateway();
-//		case META:
-//			return new MetaServiceGateway();
+		case META:
+			return new MetaServiceGateway();
 		default:
 			return null;
 		}

@@ -41,13 +41,7 @@ public class UsuarioService {
 
     // COMPROBAR SI EL USUARIO ES REGISTRABLE
     public Boolean esRegistable(String email, String contraseña, TipoLogin tipoLogin) {
-        loginServiceFactory.getLoginServiceGateway(tipoLogin).comprobarEmail(email);
-        //if (tipoLogin == TipoLogin.GOOGLE) {
-            return loginServiceFactory.getLoginServiceGateway(TipoLogin.GOOGLE).comprobarEmail(email);
-        //} else {
-           // return MetaService.comprobarEmailContrasena(email, contraseña);
-
-        //}
+        return loginServiceFactory.getLoginServiceGateway(tipoLogin).comprobarEmail(email);
     }
 
     // AÑADIR USUARIO
