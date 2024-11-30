@@ -124,4 +124,8 @@ public class UsuarioService {
         return usuarios; 
     }
 
+    public boolean tokenValido(String token) {
+        return tokenes.containsKey(token);
+    }
+
 }
