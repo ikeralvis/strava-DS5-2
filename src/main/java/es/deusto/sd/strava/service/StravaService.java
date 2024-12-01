@@ -55,23 +55,21 @@ public class StravaService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(u.getEmail());
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            List<Entrenamiento> entrenamientos = entrenamientoRepository.findEntrenamientoUsuarioFecha(usuarioOpt.get().getId(), fechaInicio.toString(), fechaFin.toString());
-
-
-
-
-            /*// Filtrar entrenamientos según fechas
+            //List<Entrenamiento> entrenamientosFiltrados = entrenamientoRepository.findEntrenamientoUsuarioFecha(usuarioOpt.get().getId(), fechaInicio, fechaFin);
+            
+    
+            // Filtrar entrenamientos según fechas
             List<Entrenamiento> entrenamientosFiltrados = new ArrayList<>();
             for (Entrenamiento entrenamiento : usuario.getEntrenamientos()) {
                 LocalDate fechaEntrenamiento = entrenamiento.getFechaInicio();
                 if (fechaEntrenamiento.isAfter(fechaInicio) && fechaEntrenamiento.isBefore(fechaFin)) {
                     entrenamientosFiltrados.add(entrenamiento);
                 }
-            }*/
+            }
         // Ordenar los entrenamientos por fecha de inicio de manera descendente
-        entrenamientos.sort((e1, e2) -> e2.getFechaInicio().compareTo(e1.getFechaInicio()));
+        entrenamientosFiltrados.sort((e1, e2) -> e2.getFechaInicio().compareTo(e1.getFechaInicio()));
         // Retornar los 5 entrenamientos más recientes
-        return entrenamientos.stream().limit(5).collect(Collectors.toList());
+        return entrenamientosFiltrados.stream().limit(5).collect(Collectors.toList());
     } 
     // Si el usuario no existe, retornar una lista vacía
     return Collections.emptyList();
