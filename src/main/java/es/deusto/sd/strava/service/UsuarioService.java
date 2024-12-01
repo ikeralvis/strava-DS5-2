@@ -8,7 +8,7 @@ import es.deusto.sd.strava.dao.RetoRepository;
 import es.deusto.sd.strava.entity.Reto;
 import es.deusto.sd.strava.entity.TipoLogin;
 import es.deusto.sd.strava.entity.Usuario;
-
+import es.deusto.sd.strava.external.ILoginServiceGateway;
 import es.deusto.sd.strava.external.LoginServiceFactory;
 
 import java.util.HashMap;
@@ -41,6 +41,11 @@ public class UsuarioService {
 
     // COMPROBAR SI EL USUARIO ES REGISTRABLE
     public Boolean esRegistable(String email, String contraseña, TipoLogin tipoLogin) {
+        ILoginServiceGateway loginServiceGateway = loginServiceFactory.getLoginServiceGateway(tipoLogin);
+        if(loginServiceGateway == null) {
+            throw new IllegalArgumentException("Tipo de login no soportado: " + tipoLogin);
+        }
+        
         return loginServiceFactory.getLoginServiceGateway(tipoLogin).comprobarEmail(email);
     }
 

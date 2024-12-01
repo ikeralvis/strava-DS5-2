@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -48,13 +49,13 @@ public class GoogleServiceGateway implements ILoginServiceGateway {
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        ResponseEntity<Map<String, String>> response = restTemplate.exchange(GOOGLE_API_URL, HttpMethod.POST,
-                requestEntity, new ParameterizedTypeReference<Map<String, String>>() {
-                });
+        try {
+            ResponseEntity<Map<String, String>> response = restTemplate.exchange(GOOGLE_API_URL, HttpMethod.POST,
+                    requestEntity, new ParameterizedTypeReference<Map<String, String>>() {
+                    });
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return true;
-        } else {
+            return response.getStatusCode() == HttpStatus.OK;
+        } catch (RestClientException e) {
             return false;
         }
     }

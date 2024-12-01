@@ -70,7 +70,9 @@ public class UsuarioController {
                     if(usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(), credenciales.getTipoLogin())){
                         return new ResponseEntity<>("La contrasenya y el correo son correctos", HttpStatus.OK);
                     }
-                    return new ResponseEntity<>("El usuario: \"" + nombre + "\" con email: \"" + credenciales.getEmail() + "\" NO registrado", HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>
+                    
+                    ("El usuario: \"" + nombre + "\" con email: \"" + credenciales.getEmail() + "\" NO registrado", HttpStatus.UNAUTHORIZED);
                     /*if (usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(),
                             credenciales.getTipoLogin())) {
                         Usuario usuario = new Usuario(generadorID.incrementAndGet(), nombre, credenciales.getEmail(), peso, altura, fechaNacimiento, frecuenciaCardiacaMax, frecuenciaCardiacaReposo, credenciales.getTipoLogin());
