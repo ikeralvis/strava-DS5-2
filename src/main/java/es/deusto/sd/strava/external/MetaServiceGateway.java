@@ -8,10 +8,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import org.springframework.stereotype.Component;
 
-import es.deusto.sd.strava.entity.TipoLogin;
-
-import java.util.Scanner;
-
 @Component
 public class MetaServiceGateway implements ILoginServiceGateway {
     private String serverIP;
