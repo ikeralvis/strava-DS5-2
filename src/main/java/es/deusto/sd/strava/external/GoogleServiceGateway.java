@@ -10,9 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import es.deusto.sd.strava.entity.TipoLogin;
 
 @Component
 public class GoogleServiceGateway implements ILoginServiceGateway {
@@ -40,10 +39,24 @@ public class GoogleServiceGateway implements ILoginServiceGateway {
 
     }
 
+    public boolean comprobarEmail(String email) {
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, String> requestBody = Map.of("email", email);
 
+        HttpHeaders headers = new HttpHeaders();
 
-    @Override
-    public TipoLogin getTipoLogin(){
-        return TipoLogin.GOOGLE;
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        try {
+            ResponseEntity<Map<String, String>> response = restTemplate.exchange(GOOGLE_API_URL, HttpMethod.POST,
+                    requestEntity, new ParameterizedTypeReference<Map<String, String>>() {
+                    });
+
+            return response.getStatusCode() == HttpStatus.OK;
+        } catch (RestClientException e) {
+            return false;
+        }
     }
 }

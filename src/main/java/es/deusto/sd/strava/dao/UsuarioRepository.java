@@ -11,6 +11,7 @@ import es.deusto.sd.strava.entity.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByEmail(String email);
     Boolean existsByEmail(String email);
+    
 
 
 }

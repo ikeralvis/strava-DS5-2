@@ -67,7 +67,13 @@ public class UsuarioController {
                         HttpStatus.CONFLICT);
             } else {
                 try {
-                    if (usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(),
+                    if(usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(), credenciales.getTipoLogin())){
+                        return new ResponseEntity<>("La contrasenya y el correo son correctos", HttpStatus.OK);
+                    }
+                    return new ResponseEntity<>
+                    
+                    ("El usuario: \"" + nombre + "\" con email: \"" + credenciales.getEmail() + "\" NO registrado", HttpStatus.UNAUTHORIZED);
+                    /*if (usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(),
                             credenciales.getTipoLogin())) {
                         Usuario usuario = new Usuario(generadorID.incrementAndGet(), nombre, credenciales.getEmail(), peso, altura, fechaNacimiento, frecuenciaCardiacaMax, frecuenciaCardiacaReposo, credenciales.getTipoLogin());
                         usuarioService.añadirUsuario(usuario);
@@ -75,7 +81,7 @@ public class UsuarioController {
                     } else {
                         return new ResponseEntity<>("La contrasenya o el correo no son correctos",
                                 HttpStatus.UNAUTHORIZED);
-                    }
+                    }*/
                 } catch (Exception e) {
                     return ResponseEntity.status(500).build();
                 }

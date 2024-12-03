@@ -8,7 +8,7 @@ import es.deusto.sd.strava.dao.RetoRepository;
 import es.deusto.sd.strava.entity.Reto;
 import es.deusto.sd.strava.entity.TipoLogin;
 import es.deusto.sd.strava.entity.Usuario;
-
+import es.deusto.sd.strava.external.ILoginServiceGateway;
 import es.deusto.sd.strava.external.LoginServiceFactory;
 
 import java.util.HashMap;
@@ -41,11 +41,12 @@ public class UsuarioService {
 
     // COMPROBAR SI EL USUARIO ES REGISTRABLE
     public Boolean esRegistable(String email, String contraseña, TipoLogin tipoLogin) {
-        if (tipoLogin == TipoLogin.GOOGLE) {
-            return GoogleService.comprobarEmailContrasena(email, contraseña);
-        } else {
-            return MetaService.comprobarEmailContrasena(email, contraseña);
+        ILoginServiceGateway loginServiceGateway = loginServiceFactory.getLoginServiceGateway(tipoLogin);
+        if(loginServiceGateway == null) {
+            throw new IllegalArgumentException("Tipo de login no soportado: " + tipoLogin);
         }
+        
+        return loginServiceFactory.getLoginServiceGateway(tipoLogin).login(email, contraseña);
     }
 
     // AÑADIR USUARIO
@@ -120,6 +121,10 @@ public class UsuarioService {
     public List<Usuario> consultarUsuarios() {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return usuarios; 
+    }
+
+    public boolean tokenValido(String token) {
+        return tokenes.containsKey(token);
     }
 
 }

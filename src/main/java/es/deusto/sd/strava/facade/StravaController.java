@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.deusto.sd.strava.dto.RetoDTO;
+import es.deusto.sd.strava.dao.EntrenamientoRepository;
+import es.deusto.sd.strava.dao.RetoRepository;
+import es.deusto.sd.strava.dao.UsuarioRepository;
 import es.deusto.sd.strava.dto.EntrenamientoDTO;
 import es.deusto.sd.strava.entity.Entrenamiento;
 import es.deusto.sd.strava.entity.Reto;
@@ -67,12 +70,14 @@ public class StravaController {
             @RequestParam("horaInicio") String horaInicio,
             @Parameter(name= "token", description = "Token de autorizacion", required = true, example = "1234567890")
             @RequestParam("token") String token) {
-
-        Entrenamiento entrenamiento = new Entrenamiento(titulo, deporte, distancia, duracion, fechaInicio, horaInicio);
-        Usuario usuario = usuarioService.usuarioPorToken(token);
-        if (usuario == null) {
+        
+        //Usuario usuario = usuarioRepository.findById()
+       
+        if(!usuarioService.tokenValido(token)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        Usuario usuario = usuarioService.usuarioPorToken(token);
+        Entrenamiento entrenamiento = new Entrenamiento(titulo, deporte, distancia, duracion, fechaInicio, horaInicio);
         return ResponseEntity.ok(stravaService.crearEntrenamiento(entrenamiento, usuario));
     }
 
@@ -95,22 +100,21 @@ public class StravaController {
             @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = true, example = "12/12/2021")
             @RequestParam("fechaFin") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin) {
 
+    //Usuario usuario = usuarioRepository.findById();
     Usuario usuario = usuarioService.usuarioPorToken(token);
-    if (usuario == null) {
+    if(!usuarioService.tokenValido(token)){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-
-    List<Entrenamiento> entrenamientos = stravaService.consultarEntrenamientos(usuario, fechaInicio, fechaFin);
     List<EntrenamientoDTO> entrenamientosDTO = new ArrayList<>();
-    if (entrenamientos != null) {
+    
+    if(fechaInicio != null || fechaFin != null){
+        List<Entrenamiento> entrenamientos = stravaService.consultarEntrenamientos(usuario, fechaInicio, fechaFin);
         for (Entrenamiento entrenamiento : entrenamientos) {
             entrenamientosDTO.add(entrenamientoaDTO(entrenamiento));
         }
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return new ResponseEntity<>(entrenamientosDTO, HttpStatus.OK);
     }
-    return ResponseEntity.ok(entrenamientosDTO);
-
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 }
 
     // FUNCION PARA CREAR UN RETO
@@ -137,6 +141,7 @@ public class StravaController {
             @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = true, example = "12/12/2021")
             @RequestParam("fechaFin") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin
             ) {
+
         Reto reto = new Reto(nombre, deporte, objetivoDistancia, objetivoTiempo, fechaInicio, fechaFin);
         return ResponseEntity.ok(stravaService.crearReto(reto));
     }
