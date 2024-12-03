@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class GoogleServiceGateway implements ILoginServiceGateway {
     private final String GOOGLE_API_URL = "http://localhost:8081/auth/login";
+    private final String GOOGLE_API_URL_EMAIL = "http://localhost:8081/auth/verificar-email";
 
     public boolean login(String email, String password) {
         RestTemplate restTemplate = new RestTemplate();
@@ -50,7 +51,7 @@ public class GoogleServiceGateway implements ILoginServiceGateway {
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
 
         try {
-            ResponseEntity<Map<String, String>> response = restTemplate.exchange(GOOGLE_API_URL, HttpMethod.POST,
+            ResponseEntity<Map<String, String>> response = restTemplate.exchange(GOOGLE_API_URL_EMAIL, HttpMethod.POST,
                     requestEntity, new ParameterizedTypeReference<Map<String, String>>() {
                     });
 
