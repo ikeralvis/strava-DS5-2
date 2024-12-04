@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.deusto.sd.strava.dto.RetoDTO;
-import es.deusto.sd.strava.dao.EntrenamientoRepository;
-import es.deusto.sd.strava.dao.RetoRepository;
-import es.deusto.sd.strava.dao.UsuarioRepository;
+
 import es.deusto.sd.strava.dto.EntrenamientoDTO;
 import es.deusto.sd.strava.entity.Entrenamiento;
 import es.deusto.sd.strava.entity.Reto;
