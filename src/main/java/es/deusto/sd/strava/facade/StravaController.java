@@ -75,6 +75,7 @@ public class StravaController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Usuario usuario = usuarioService.usuarioPorToken(token);
+
         Entrenamiento entrenamiento = new Entrenamiento(titulo, deporte, distancia, duracion, fechaInicio, horaInicio);
         return ResponseEntity.ok(stravaService.crearEntrenamiento(entrenamiento, usuario));
     }

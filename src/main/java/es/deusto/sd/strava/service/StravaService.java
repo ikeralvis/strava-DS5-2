@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -38,25 +37,20 @@ public class StravaService {
 
     // FUNCION PARA CREAR UNA SESIÓN DE ENTRENAMIENTO EN USUARIO
     public String crearEntrenamiento(Entrenamiento entrenamiento, Usuario u) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(u.getEmail());
-        
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            usuario.getEntrenamientos().add(entrenamiento);
-            entrenamiento.setUsuario(usuario);
+        if(u != null){
+            u.getEntrenamientos().add(entrenamiento);
+            entrenamiento.setUsuario(u);
             entrenamientoRepository.save(entrenamiento);
-        return "El entremaniento \"" + entrenamiento.getTitulo() + "\" ha sido registrado con éxito";
-    }
-    return "El usuario no existe";
+            return "El entremaniento \"" + entrenamiento.getTitulo() + "\" ha sido registrado con éxito";
+        }
+        return "El usuario no puede ser nulo";
     }
 
     // OBTENER TODOS LOS ENTRENAMIENTOS DE UN USUARIO
-    public List<Entrenamiento> consultarEntrenamientos(Usuario u, LocalDate fechaInicio, LocalDate fechaFin) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(u.getEmail());
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
+    public List<Entrenamiento> consultarEntrenamientos(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin) {
+       //Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(u.getEmail());
+        if (usuario!= null) {
             //List<Entrenamiento> entrenamientosFiltrados = entrenamientoRepository.findEntrenamientoUsuarioFecha(usuarioOpt.get().getId(), fechaInicio, fechaFin);
-            
     
             // Filtrar entrenamientos según fechas
             List<Entrenamiento> entrenamientosFiltrados = new ArrayList<>();

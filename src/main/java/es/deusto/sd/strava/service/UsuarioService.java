@@ -27,7 +27,9 @@ public class UsuarioService {
     private RetoRepository retoRepository;
 
     // REPOSITORIO DE USUARIOS Y TOKENS
-    private static Map<String, Usuario> tokenes = new HashMap<>();
+    //private static Map<String, Usuario> tokenes = new HashMap<>();
+    private static Map<String, String> tokenesEmail = new HashMap<>();
+    
 
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -68,28 +70,24 @@ public class UsuarioService {
 
         if (usuarioOpt.isPresent() && loginServiceFactory.getLoginServiceGateway(usuarioOpt.get().getTipoLogin()).login(email, password)) {
 			String token = loginToken(email, password);
-			tokenes.put(token, usuarioOpt.get());   
+            tokenesEmail.put(token, email);
+			//tokenes.put(token, usuarioOpt.get());   
 			return Optional.of(token); 		
 		}	
-    	return Optional.empty();
-
-        //boolean credencialesValidas;
-
-        /*if (tipoLogin == TipoLogin.GOOGLE) {
-            credencialesValidas = googleServiceGateway.login(email, password);
-        } else if (tipoLogin == TipoLogin.META) {
-            credencialesValidas = MetaService.comprobarEmailContrasena(email, password);
-        } else {
-            throw new IllegalArgumentException("Tipo de login no soportado: " + tipoLogin);
-        }*/
-            
+    	return Optional.empty();           
             
     }
 
     // LOGOUT Y BORRAR TOKEN
     public Optional<Boolean> logout(String token) {
-        if (tokenes.containsKey(token)) {
+        /*if (tokenes.containsKey(token)) {
             tokenes.remove(token);
+            return Optional.of(true);
+        } else {
+            return Optional.empty();
+        }*/
+        if(tokenesEmail.containsKey(token)) {
+            tokenesEmail.remove(token);
             return Optional.of(true);
         } else {
             return Optional.empty();
@@ -98,17 +96,21 @@ public class UsuarioService {
 
     // OBTENER USUARIO POR TOKEN
     public Usuario usuarioPorToken(String token) {
-        return tokenes.get(token);
+        String email = tokenesEmail.get(token);
+        Optional<Usuario> user= usuarioRepository.findByEmail(email);
+        if(user.isPresent()) {
+            return user.get();
+        }
+        return null;
     }
 
-    // OBTENER USUARIO POR EMAIL
-    /*public Optional<Usuario> usuarioPorEmail(String email) {
-        if (!usuarios.containsKey(email)) {
-            return Optional.empty();
-        } else {
-            return Optional.of(usuarios.get(email));
+    public Usuario usuarioPorEmail(String email) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isPresent()) {
+            return usuarioOpt.get();
         }
-    }*/
+        return null;
+    }
 
     // EXISTE USUARIO
     public Boolean existeUsuario(String email) {
@@ -123,7 +125,8 @@ public class UsuarioService {
     }
 
     public boolean tokenValido(String token) {
-        return tokenes.containsKey(token);
+        return tokenesEmail.containsKey(token);
+        //return tokenes.containsKey(token);
     }
 
 }
