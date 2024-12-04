@@ -45,8 +45,7 @@ public class UsuarioService {
         if(loginServiceGateway == null) {
             throw new IllegalArgumentException("Tipo de login no soportado: " + tipoLogin);
         }
-        
-        return loginServiceFactory.getLoginServiceGateway(tipoLogin).login(email, contraseña);
+        return loginServiceFactory.getLoginServiceGateway(tipoLogin).comprobarEmail(email);
     }
 
     // AÑADIR USUARIO

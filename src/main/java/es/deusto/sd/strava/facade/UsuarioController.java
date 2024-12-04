@@ -62,17 +62,18 @@ public class UsuarioController {
         @Parameter(name = "frecuenciaCardiacaReposo", description = "Frecuencia cardiaca e<n reposo del usuario a registrar",required = false, example = "70")
         @RequestParam("frecuenciaCardiacaReposo") int frecuenciaCardiacaReposo
         ) {
-            if (usuarioService.existeUsuario(credenciales.getEmail())) {
-                return new ResponseEntity<>("El usuario con el correo: " + credenciales.getEmail() + " ya existe",
-                        HttpStatus.CONFLICT);
-            } else {
-                try {
+            //if (usuarioService.existeUsuario(credenciales.getEmail())) {
+               // return new ResponseEntity<>("El usuario con el correo: " + credenciales.getEmail() + " ya existe",
+                        //HttpStatus.CONFLICT);
+           
                     if(usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(), credenciales.getTipoLogin())){
-                        return new ResponseEntity<>("La contrasenya y el correo son correctos", HttpStatus.OK);
-                    }
-                    return new ResponseEntity<>
-                    
-                    ("El usuario: \"" + nombre + "\" con email: \"" + credenciales.getEmail() + "\" NO registrado", HttpStatus.UNAUTHORIZED);
+                        System.out.println("Usuario registrado");
+                        return new ResponseEntity<>("El usuario: \"" + nombre + "\" con email: \"" + credenciales.getEmail() + "\" registrado exitosamente", HttpStatus.OK);}
+                        else{
+                            System.out.println("Usuario no registrado :" + credenciales.getEmail());
+                            return new ResponseEntity<>("La contrasenya o el correo no son correctos", HttpStatus.UNAUTHORIZED);
+                        }
+                        
                     /*if (usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(),
                             credenciales.getTipoLogin())) {
                         Usuario usuario = new Usuario(generadorID.incrementAndGet(), nombre, credenciales.getEmail(), peso, altura, fechaNacimiento, frecuenciaCardiacaMax, frecuenciaCardiacaReposo, credenciales.getTipoLogin());
@@ -82,10 +83,10 @@ public class UsuarioController {
                         return new ResponseEntity<>("La contrasenya o el correo no son correctos",
                                 HttpStatus.UNAUTHORIZED);
                     }*/
-                } catch (Exception e) {
-                    return ResponseEntity.status(500).build();
-                }
-            }
+               // } catch (Exception e) {
+                  //  return ResponseEntity.status(500).build();
+                //}
+            //}
         }
 
     
