@@ -53,12 +53,8 @@ public class DatosMuestra {
 			cristianoRonaldo.setEntrenamientos(entrenamientos);
 			cristianoRonaldo.setRetosAceptados(retos);
 
+			
 			usuarioRepository.save(usainBolt);
-			usuarioRepository.save(michaelPhelps);
-			usuarioRepository.save(serenaWilliams);
-			usuarioRepository.save(lionelMessi);
-			usuarioRepository.save(lebronJames);
-			usuarioRepository.save(cristianoRonaldo);
 			logger.info("Usuarios registrados!");
 
 			carreraMañana.setUsuario(cristianoRonaldo);

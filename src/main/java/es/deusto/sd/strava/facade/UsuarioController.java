@@ -30,7 +30,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    private final AtomicInteger generadorID = new AtomicInteger(0);
+    private final AtomicInteger generadorID = new AtomicInteger(7);
     
 
 
