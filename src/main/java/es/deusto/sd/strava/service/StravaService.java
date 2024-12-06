@@ -48,10 +48,7 @@ public class StravaService {
 
     // OBTENER TODOS LOS ENTRENAMIENTOS DE UN USUARIO
     public List<Entrenamiento> consultarEntrenamientos(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin) {
-       //Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(u.getEmail());
         if (usuario!= null) {
-            //List<Entrenamiento> entrenamientosFiltrados = entrenamientoRepository.findEntrenamientoUsuarioFecha(usuarioOpt.get().getId(), fechaInicio, fechaFin);
-    
             // Filtrar entrenamientos según fechas
             List<Entrenamiento> entrenamientosFiltrados = new ArrayList<>();
             for (Entrenamiento entrenamiento : usuario.getEntrenamientos()) {
@@ -110,6 +107,7 @@ public class StravaService {
             for (Reto reto : retoRepository.findAll()) {
                 if (reto.getNombre().equals(nombreReto)) {
                     usuario.getRetosAceptados().add(reto);
+                    usuarioRepository.save(usuario);
                     return "Reto aceptado con éxito";
                 }
             }

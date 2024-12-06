@@ -71,7 +71,6 @@ public class UsuarioService {
         if (usuarioOpt.isPresent() && loginServiceFactory.getLoginServiceGateway(usuarioOpt.get().getTipoLogin()).login(email, password)) {
 			String token = loginToken(email, password);
             tokenesEmail.put(token, email);
-			//tokenes.put(token, usuarioOpt.get());   
 			return Optional.of(token); 		
 		}	
     	return Optional.empty();           
@@ -80,12 +79,6 @@ public class UsuarioService {
 
     // LOGOUT Y BORRAR TOKEN
     public Optional<Boolean> logout(String token) {
-        /*if (tokenes.containsKey(token)) {
-            tokenes.remove(token);
-            return Optional.of(true);
-        } else {
-            return Optional.empty();
-        }*/
         if(tokenesEmail.containsKey(token)) {
             tokenesEmail.remove(token);
             return Optional.of(true);
@@ -126,7 +119,6 @@ public class UsuarioService {
 
     public boolean tokenValido(String token) {
         return tokenesEmail.containsKey(token);
-        //return tokenes.containsKey(token);
     }
 
 }

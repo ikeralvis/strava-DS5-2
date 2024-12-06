@@ -44,17 +44,17 @@ public class DatosMuestra {
 			logger.info("Retos registrados!");
 
 			// Usuarios de muestra
-			Usuario usainBolt = new Usuario(1,"UsainBolt", "usain.bolt@athletics.com", "12-13-1978", TipoLogin.GOOGLE);
-			Usuario michaelPhelps = new Usuario(2,"MichaelPhelps", "michael.phelps@swimming.com", "06-30-1985", TipoLogin.META);
-			Usuario serenaWilliams = new Usuario(3,"SerenaWilliams", "serena.williams@tennis.com", "09-26-1981", TipoLogin.GOOGLE);
-			Usuario lionelMessi = new Usuario(4,"LionelMessi", "lionel.messi@soccer.com", "06-24-1987", TipoLogin.META);
-			Usuario lebronJames = new Usuario(5,"LeBronJames", "lebron.james@basketball.com", "12-30-1984", TipoLogin.GOOGLE);
-			Usuario cristianoRonaldo = new Usuario(6,"CristianoRonaldo", "cristiano.ronald@soccer.com", 80.0f, 1.87f, "02-05-1985", 220, 60, TipoLogin.META);	
+			//Usuario usainBolt = new Usuario(1,"UsainBolt", "usain.bolt@athletics.com", "12-13-1978", TipoLogin.GOOGLE);
+			//Usuario michaelPhelps = new Usuario(2,"MichaelPhelps", "michael.phelps@swimming.com", "06-30-1985", TipoLogin.META);
+			//Usuario serenaWilliams = new Usuario(3,"SerenaWilliams", "serena.williams@tennis.com", "09-26-1981", TipoLogin.GOOGLE);
+			//Usuario lionelMessi = new Usuario(4,"LionelMessi", "lionel.messi@soccer.com", "06-24-1987", TipoLogin.META);
+			//Usuario lebronJames = new Usuario(5,"LeBronJames", "lebron.james@basketball.com", "12-30-1984", TipoLogin.GOOGLE);
+
+			Usuario cristianoRonaldo = new Usuario(1,"CristianoRonaldo", "cristiano.ronald@soccer.com", 80.0f, 1.87f, "02-05-1985", 220, 60, TipoLogin.META);	
 			cristianoRonaldo.setEntrenamientos(entrenamientos);
 			cristianoRonaldo.setRetosAceptados(retos);
 
-			
-			usuarioRepository.save(usainBolt);
+			usuarioRepository.save(cristianoRonaldo);
 			logger.info("Usuarios registrados!");
 
 			carreraMañana.setUsuario(cristianoRonaldo);
