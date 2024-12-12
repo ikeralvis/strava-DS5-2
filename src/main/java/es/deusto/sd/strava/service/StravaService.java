@@ -33,8 +33,6 @@ public class StravaService {
         this.retoRepository = retoRepository;
     }
 
-    List<Reto> listaRetos = new ArrayList<>();
-
     // FUNCION PARA CREAR UNA SESIÓN DE ENTRENAMIENTO EN USUARIO
     public String crearEntrenamiento(Entrenamiento entrenamiento, Usuario u) {
         if(u != null){
