@@ -98,21 +98,18 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<String> login(
         @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Contraseña, email y tipo de login del usuario", required = true)
-        @RequestBody UsuarioDTO credenciales) 
+        @Parameter(name="email" , description = "Correo electrónico del usuario", required = true, example = "string")
+        @RequestParam("email") String email,
+        @Parameter(name="contrasenya" , description = "Contraseña del usuario", required = true, example = "string")
+        @RequestParam("contrasenya") String contrasenya)
       {
-        if (!usuarioService.existeUsuario(credenciales.getEmail())) {
-            return new ResponseEntity<>(
-                    "El usuario con el correo: \"" + credenciales.getEmail() + "\" no existe,antes es necesario registrarse",
-                    HttpStatus.CONFLICT);
-        } else {
-            Optional<String> token = usuarioService.login(credenciales.getEmail(), credenciales.getContrasenya(),
-                    credenciales.getTipoLogin());
+        
+            Optional<String> token = usuarioService.login(email, contrasenya);
             if (token.isPresent()) {
                 return new ResponseEntity<>(token.get(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("El correo o la contraseña no son correctos", HttpStatus.UNAUTHORIZED);
             }
-        }
     }
 
     // FUNCION PARA HACER LOGOUT

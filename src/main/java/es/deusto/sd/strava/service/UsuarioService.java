@@ -65,7 +65,7 @@ public class UsuarioService {
 }
 
     // LOGIN Y GENERAR TOKEN
-    public Optional<String> login(String email, String password, TipoLogin tipoLogin) {
+    public Optional<String> login(String email, String password) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email); 
 
         if (usuarioOpt.isPresent() && loginServiceFactory.getLoginServiceGateway(usuarioOpt.get().getTipoLogin()).login(email, password)) {
