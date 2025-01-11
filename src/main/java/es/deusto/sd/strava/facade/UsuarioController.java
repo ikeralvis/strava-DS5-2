@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.deusto.sd.strava.entity.TipoLogin;
 import es.deusto.sd.strava.entity.Usuario;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,8 +48,10 @@ public class UsuarioController {
 
     @PostMapping("/registroUsuario")
     public ResponseEntity<String> registrarUsuario( //Anotaciones swagger y parametros de entrada de la funcion
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Contraseña, email y método de registro del usuario", required = true)
-        @RequestBody UsuarioDTO credenciales,
+        @Parameter(name = "email", description = "Email del usuario a registrar", required = true, example = "mikel@mikel.com")
+        @RequestParam("email" ) String email,
+        @Parameter(name = "tipoLogin", description = "Tipo de login del usuario a registrar", required = true, example = "META")
+        @RequestParam("tipoLogin" ) TipoLogin tipoLogin,
         @Parameter(name = "nombre", description = "Nombre del usuario a registrar", required = true, example = "Juan12")
         @RequestParam("nombre" ) String nombre,
         @Parameter(name = "fechaNacimiento", description = "Fecha de nacimiento del usuario",required = false, example = "12/12/1990")
@@ -62,17 +65,16 @@ public class UsuarioController {
         @Parameter(name = "frecuenciaCardiacaReposo", description = "Frecuencia cardiaca e<n reposo del usuario a registrar",required = false, example = "70")
         @RequestParam("frecuenciaCardiacaReposo") int frecuenciaCardiacaReposo
         ) {
-            if (usuarioService.existeUsuario(credenciales.getEmail())) {
-                return new ResponseEntity<>("El usuario con el correo: " + credenciales.getEmail() + " ya existe",
+            if (usuarioService.existeUsuario(email)) {
+                return new ResponseEntity<>("El usuario con el correo: " + email + " ya existe",
                         HttpStatus.CONFLICT);
             }
                         
             try {
-                    if (usuarioService.esRegistable(credenciales.getEmail(), credenciales.getContrasenya(),
-                            credenciales.getTipoLogin())) {
-                        Usuario usuario = new Usuario(generadorID.incrementAndGet(), nombre, credenciales.getEmail(), peso, altura, fechaNacimiento, frecuenciaCardiacaMax, frecuenciaCardiacaReposo, credenciales.getTipoLogin());
+                    if (usuarioService.esRegistable(email, tipoLogin)) {
+                        Usuario usuario = new Usuario(generadorID.incrementAndGet(), nombre, email, peso, altura, fechaNacimiento, frecuenciaCardiacaMax, frecuenciaCardiacaReposo, tipoLogin);
                         usuarioService.añadirUsuario(usuario);
-                        return new ResponseEntity<>("El usuario: \"" + nombre + "\" con email: \"" + credenciales.getEmail() + "\" registrado exitosamente", HttpStatus.OK);
+                        return new ResponseEntity<>("El usuario: \"" + nombre + "\" con email: \"" + email + "\" registrado exitosamente", HttpStatus.OK);
                     } else {
                         return new ResponseEntity<>("La contrasenya o el correo no son correctos",
                                 HttpStatus.UNAUTHORIZED);

@@ -42,7 +42,7 @@ public class UsuarioService {
     }
 
     // COMPROBAR SI EL USUARIO ES REGISTRABLE
-    public Boolean esRegistable(String email, String contraseña, TipoLogin tipoLogin) {
+    public Boolean esRegistable(String email, TipoLogin tipoLogin) {
         ILoginServiceGateway loginServiceGateway = loginServiceFactory.getLoginServiceGateway(tipoLogin);
         if(loginServiceGateway == null) {
             throw new IllegalArgumentException("Tipo de login no soportado: " + tipoLogin);
