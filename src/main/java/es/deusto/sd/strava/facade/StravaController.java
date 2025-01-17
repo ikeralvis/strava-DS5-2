@@ -131,12 +131,13 @@ public class StravaController {
     }
 
     // DEVUELVE LISTA DE RETOS ACTIVOS CREADOS POR LA COMUNIDAD (5 AL INICIO)
-    @Operation(summary = "Consultar todos los retos", description = "Devuelve la lista completa de retos creados", responses = {
-            @ApiResponse(responseCode = "400", description = "Usuario no puede ser nulo"),
-            @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
-            @ApiResponse(responseCode = "200", description = "Lista de retos consultada exitosamente") })
+    @Operation(summary = "Consultar todos los retos activos", description = "Devuelve la lista completa de retos creados que esten activos",
+    responses = {
+        @ApiResponse(responseCode = "400", description = "Usuario no puede ser nulo"),
+        @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
+        @ApiResponse(responseCode = "200", description = "Lista de retos consultada exitosamente")})
 
-    @GetMapping("/retos")
+    @GetMapping("/retosActivos")
     public ResponseEntity<List<RetoDTO>> consultarRetos() {
         List<Reto> retos = stravaService.consultarRetos();
         List<RetoDTO> retosDTO = new ArrayList<>();
@@ -150,11 +151,13 @@ public class StravaController {
         return ResponseEntity.ok(retosDTO);
     }
 
-    @Operation(summary = "Consultar todos los retos activos", description = "Devuelve la lista de retos activos (no finalizados)", responses = {
-            @ApiResponse(responseCode = "400", description = "Fecha o deporte inválidos"),
-            @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
-            @ApiResponse(responseCode = "200", description = "Lista de retos activos consultada exitosamente") })
-    @GetMapping("/retosActivos")
+    @Operation(summary = "Consultar todos los retos activos por fecha o deporte", description = "Devuelve la lista de retos activos (no finalizados)",
+    responses = {
+        @ApiResponse(responseCode = "400", description = "Fecha o deporte inválidos"),
+        @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
+        @ApiResponse(responseCode = "200", description = "Lista de retos activos consultada exitosamente")})
+    @
+    GetMapping("/retos")
     public ResponseEntity<List<RetoDTO>> consultarRetosActivos(
             @RequestParam(value = "fecha", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fecha,
             @RequestParam(value = "deporte", required = false) String deporte) {

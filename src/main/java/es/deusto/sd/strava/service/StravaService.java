@@ -67,10 +67,14 @@ public class StravaService {
 
     // OBTENER TODOS LOS RETOS
     public List<Reto> consultarRetos() {
-        if(retoRepository.findAll().isEmpty()){
+        List<Reto> retos = retoRepository.findAll();
+        if (retos.isEmpty()) {
             return Collections.emptyList();
         }
-        return retoRepository.findAll();
+        // Ordenar los retos por fecha de inicio de manera descendente
+        retos.sort((r1, r2) -> r2.getFechaInicio().compareTo(r1.getFechaInicio()));
+        // Retornar los 5 retos más recientes
+        return retos.stream().limit(5).collect(Collectors.toList());
     }
 
     public List<Reto> consultarRetosActivos(LocalDate fecha, String deporte) {
