@@ -164,4 +164,10 @@ public class StravaService {
         return retosActivos;
     }
 
+    public List<Entrenamiento> consultarTodosEntrenamientos(Usuario usuario) {
+        if(usuario != null){
+            return usuario.getEntrenamientos();
+        }
+        return Collections.emptyList();
+    }
 }

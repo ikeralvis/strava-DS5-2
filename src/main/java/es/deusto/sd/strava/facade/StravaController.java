@@ -33,7 +33,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-
 @RestController
 @RequestMapping("/api")
 @Tag(name = "API de Simulación de Strava", description = "Gestión de usuarios, entrenamientos y retos")
@@ -54,24 +53,17 @@ public class StravaController {
 
     @PostMapping("/entrenamiento")
     public ResponseEntity<String> crearEntrenamiento(
-            @Parameter(name = "titulo", description = "Nombre del entrenamiento a crear", required = true, example = "Entrenamiento1")
-            @RequestParam("titulo") String titulo ,
-            @Parameter(name = "deporte", description = "Deporte del entrenamiento a crear", required = true, example = "Ciclismo")
-            @RequestParam("deporte") String deporte,
-            @Parameter(name = "distancia", description = "Distancia del entrenamiento a crear", required = true, example = "10.5")
-            @RequestParam("distancia") float distancia,
-            @Parameter(name = "duracion", description = "Duración del entrenamiento a crear", required = true, example = "60")
-            @RequestParam("duracion") int duracion,
-            @Parameter(name = "fechaInicio", description = "Fecha de inicio del entrenamiento a crear", required = true, example = "12/12/2021")
-            @RequestParam("fechaInicio") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
-            @Parameter(name = "horaInicio", description = "Hora de inicio del entrenamiento a crear", required = true, example = "12:00")
-            @RequestParam("horaInicio") String horaInicio,
-            @Parameter(name= "token", description = "Token de autorizacion", required = true, example = "1234567890")
-            @RequestParam("token") String token) {
-        
-        //Usuario usuario = usuarioRepository.findById()
-       
-        if(!usuarioService.tokenValido(token)){
+            @Parameter(name = "titulo", description = "Nombre del entrenamiento a crear", required = true, example = "Entrenamiento1") @RequestParam("titulo") String titulo,
+            @Parameter(name = "deporte", description = "Deporte del entrenamiento a crear", required = true, example = "Ciclismo") @RequestParam("deporte") String deporte,
+            @Parameter(name = "distancia", description = "Distancia del entrenamiento a crear", required = true, example = "10.5") @RequestParam("distancia") float distancia,
+            @Parameter(name = "duracion", description = "Duración del entrenamiento a crear", required = true, example = "60") @RequestParam("duracion") int duracion,
+            @Parameter(name = "fechaInicio", description = "Fecha de inicio del entrenamiento a crear", required = true, example = "12/12/2021") @RequestParam("fechaInicio") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
+            @Parameter(name = "horaInicio", description = "Hora de inicio del entrenamiento a crear", required = true, example = "12:00") @RequestParam("horaInicio") String horaInicio,
+            @Parameter(name = "token", description = "Token de autorizacion", required = true, example = "1234567890") @RequestParam("token") String token) {
+
+        // Usuario usuario = usuarioRepository.findById()
+
+        if (!usuarioService.tokenValido(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         Usuario usuario = usuarioService.usuarioPorToken(token);
@@ -81,76 +73,65 @@ public class StravaController {
     }
 
     // DEVUELVE LISTA DE SESIONES DE ENTRENAMIENTOS DE USUARIO
-    @Operation(summary = "Consultar todos los entrenamientos del usuario",
-     description = "Devuelve la lista completa de entrenamientos realizados por el usuario",
-     responses = {
+    @Operation(summary = "Consultar todos los entrenamientos del usuario", description = "Devuelve la lista completa de entrenamientos realizados por el usuario", responses = {
             @ApiResponse(responseCode = "200", description = "Lista de entrenamientos consultada exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
             @ApiResponse(responseCode = "409", description = "Usuario no existe"),
             @ApiResponse(responseCode = "401", description = "Usuario no autorizado")
     })
-    
-    @GetMapping("/entrenamientos/{fechaInicio}/{fechaFin}")
-    public ResponseEntity<List<EntrenamientoDTO>> consultarEntrenamientos(
-            @Parameter(name= "token", description = "Token de autorizacion", required = true, example = "1234567890") 
-    		@RequestParam("token") String token,
-            @Parameter(name = "fechaInicio", description = "Fecha de inicio para filtrar los entrenamientos", required = true, example = "12/12/2021")
-            @RequestParam("fechaInicio") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
-            @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = true, example = "12/12/2021")
-            @RequestParam("fechaFin") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin) {
 
-    //Usuario usuario = usuarioRepository.findById();
-    Usuario usuario = usuarioService.usuarioPorToken(token);
-    if(!usuarioService.tokenValido(token)){
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-    List<EntrenamientoDTO> entrenamientosDTO = new ArrayList<>();
-    
-    if(fechaInicio != null || fechaFin != null){
-        List<Entrenamiento> entrenamientos = stravaService.consultarEntrenamientos(usuario, fechaInicio, fechaFin);
-        for (Entrenamiento entrenamiento : entrenamientos) {
-            entrenamientosDTO.add(entrenamientoaDTO(entrenamiento));
+    @GetMapping("/entrenamientos")
+    public ResponseEntity<List<EntrenamientoDTO>> consultarEntrenamientos(
+            @Parameter(name = "token", description = "Token de autorizacion", required = true, example = "1234567890") @RequestParam("token") String token,
+            @Parameter(name = "fechaInicio", description = "Fecha de inicio para filtrar los entrenamientos", required = false, example = "12/12/2021") @RequestParam("fechaInicio") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
+            @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = false, example = "12/12/2021") @RequestParam("fechaFin") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin) {
+
+        // Usuario usuario = usuarioRepository.findById();
+        Usuario usuario = usuarioService.usuarioPorToken(token);
+        if (!usuarioService.tokenValido(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return new ResponseEntity<>(entrenamientosDTO, HttpStatus.OK);
+
+        List<Entrenamiento> entrenamientos = new ArrayList<>();
+
+        if (fechaInicio != null || fechaFin != null) {
+            entrenamientos = stravaService.consultarEntrenamientos(usuario, fechaInicio, fechaFin);
+        } else {
+            entrenamientos = stravaService.consultarTodosEntrenamientos(usuario);
+        }
+        List<EntrenamientoDTO> entrenamientosDTO = entrenamientos.stream()
+                .map(this::entrenamientoaDTO)
+                .toList();
+        return ResponseEntity.ok(entrenamientosDTO);
+        //return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-}
 
     // FUNCION PARA CREAR UN RETO
-    @Operation(summary = "Crear un nuevo reto", description = "Permite crear un nuevo reto", 
-    responses = {
+    @Operation(summary = "Crear un nuevo reto", description = "Permite crear un nuevo reto", responses = {
             @ApiResponse(responseCode = "200", description = "Reto creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Reto no puede ser nulo"),
             @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
             @ApiResponse(responseCode = "409", description = "Reto ya existe")
     })
- 
+
     @PostMapping("/reto")
     public ResponseEntity<String> crearReto(
-            @Parameter(name = "nombre", description = "Nombre del reto a crear", required = true, example = "Reto1")
-            @RequestParam("nombre") String nombre,
-            @Parameter(name = "deporte", description = "Deporte del reto a crear", required = true, example = "Ciclismo")
-            @RequestParam("deporte") String deporte,
-            @Parameter(name = "objetivoDistancia", description = "Distancia objetivo del reto a crear", required = true, example = "100")
-            @RequestParam("objetivoDistancia") float objetivoDistancia,
-            @Parameter(name = "objetivoTiempo", description = "Tiempo objetivo del reto a crear", required = true, example = "60")
-            @RequestParam("objetivoTiempo") int objetivoTiempo,
-            @Parameter(name = "fechaInicio", description = "Fecha de inicio para filtrar los entrenamientos", required = true, example = "12/12/2021")
-            @RequestParam("fechaInicio") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
-            @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = true, example = "12/12/2021")
-            @RequestParam("fechaFin") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin
-            ) {
+            @Parameter(name = "nombre", description = "Nombre del reto a crear", required = true, example = "Reto1") @RequestParam("nombre") String nombre,
+            @Parameter(name = "deporte", description = "Deporte del reto a crear", required = true, example = "Ciclismo") @RequestParam("deporte") String deporte,
+            @Parameter(name = "objetivoDistancia", description = "Distancia objetivo del reto a crear", required = true, example = "100") @RequestParam("objetivoDistancia") float objetivoDistancia,
+            @Parameter(name = "objetivoTiempo", description = "Tiempo objetivo del reto a crear", required = true, example = "60") @RequestParam("objetivoTiempo") int objetivoTiempo,
+            @Parameter(name = "fechaInicio", description = "Fecha de inicio para filtrar los entrenamientos", required = true, example = "12/12/2021") @RequestParam("fechaInicio") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
+            @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = true, example = "12/12/2021") @RequestParam("fechaFin") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin) {
 
         Reto reto = new Reto(nombre, deporte, objetivoDistancia, objetivoTiempo, fechaInicio, fechaFin);
         return ResponseEntity.ok(stravaService.crearReto(reto));
     }
 
     // DEVUELVE LISTA DE RETOS ACTIVOS CREADOS POR LA COMUNIDAD (5 AL INICIO)
-    @Operation(summary = "Consultar todos los retos", description = "Devuelve la lista completa de retos creados",
-    responses = {
-        @ApiResponse(responseCode = "400", description = "Usuario no puede ser nulo"),
-        @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
-        @ApiResponse(responseCode = "200", description = "Lista de retos consultada exitosamente")})
+    @Operation(summary = "Consultar todos los retos", description = "Devuelve la lista completa de retos creados", responses = {
+            @ApiResponse(responseCode = "400", description = "Usuario no puede ser nulo"),
+            @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
+            @ApiResponse(responseCode = "200", description = "Lista de retos consultada exitosamente") })
 
     @GetMapping("/retos")
     public ResponseEntity<List<RetoDTO>> consultarRetos() {
@@ -166,25 +147,23 @@ public class StravaController {
         return ResponseEntity.ok(retosDTO);
     }
 
-    @Operation(summary = "Consultar todos los retos activos", description = "Devuelve la lista de retos activos (no finalizados)",
-    responses = {
-        @ApiResponse(responseCode = "400", description = "Fecha o deporte inválidos"),
-        @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
-        @ApiResponse(responseCode = "200", description = "Lista de retos activos consultada exitosamente")})
-    @
-    GetMapping("/retosActivos")
+    @Operation(summary = "Consultar todos los retos activos", description = "Devuelve la lista de retos activos (no finalizados)", responses = {
+            @ApiResponse(responseCode = "400", description = "Fecha o deporte inválidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
+            @ApiResponse(responseCode = "200", description = "Lista de retos activos consultada exitosamente") })
+    @GetMapping("/retosActivos")
     public ResponseEntity<List<RetoDTO>> consultarRetosActivos(
             @RequestParam(value = "fecha", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fecha,
             @RequestParam(value = "deporte", required = false) String deporte) {
-    
+
         // Si no se proporciona una fecha, se usa la fecha actual
         if (fecha == null) {
             fecha = LocalDate.now();
         }
-    
+
         List<Reto> retos = stravaService.consultarRetosActivos(fecha, deporte);
         List<RetoDTO> retosDTO = new ArrayList<>();
-    
+
         if (retos != null) {
             for (Reto reto : retos) {
                 retosDTO.add(retoaDTO(reto));
@@ -192,14 +171,12 @@ public class StravaController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-    
+
         return ResponseEntity.ok(retosDTO);
     }
 
-
     // FUNCION PARA ACEPTAR UN RETO
-    @Operation(summary = "Aceptar un reto", description = "Permite aceptar un reto de la comunidad",
-         responses = {
+    @Operation(summary = "Aceptar un reto", description = "Permite aceptar un reto de la comunidad", responses = {
             @ApiResponse(responseCode = "200", description = "Reto aceptado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Reto no puede ser nulo"),
             @ApiResponse(responseCode = "500", description = "Error interno en el servidor"),
@@ -207,10 +184,8 @@ public class StravaController {
     })
     @PostMapping("/retos/{nombreReto}/aceptar")
     public ResponseEntity<String> aceptarReto(
-            @Parameter(name = "nombreReto" ,description = "Nombre del reto a aceptar", required = true, example = "Reto1")
-            @PathVariable("nombreReto") String nombreReto,
-            @Parameter( name= "token", description = "Token de autorizacion", required = true, example = "1234567890")
-            @RequestBody String token) {
+            @Parameter(name = "nombreReto", description = "Nombre del reto a aceptar", required = true, example = "Reto1") @PathVariable("nombreReto") String nombreReto,
+            @Parameter(name = "token", description = "Token de autorizacion", required = true, example = "1234567890") @RequestBody String token) {
         Usuario usuario = usuarioService.usuarioPorToken(token);
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -226,15 +201,14 @@ public class StravaController {
             @ApiResponse(responseCode = "409", description = "Usuario no existe")
     })
     @GetMapping("/retosAceptados")
-    public ResponseEntity<List<RetoDTO>>  consultarRetosAceptados(
-        @Parameter(name= "token", description = "Token de autorizacion", required = true, example = "1234567890")
-        @RequestParam("token") String token) {
+    public ResponseEntity<List<RetoDTO>> consultarRetosAceptados(
+            @Parameter(name = "token", description = "Token de autorizacion", required = true, example = "1234567890") @RequestParam("token") String token) {
         Usuario usuario = usuarioService.usuarioPorToken(token);
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        
-        Map<Reto,Integer> retos = stravaService.consultarRetosActivosConProgreso(usuario);
+
+        Map<Reto, Integer> retos = stravaService.consultarRetosActivosConProgreso(usuario);
         List<RetoDTO> retosDTO = new ArrayList<>();
         if (retos != null) {
             for (Map.Entry<Reto, Integer> entry : retos.entrySet()) {
