@@ -82,9 +82,12 @@ public class StravaController {
 
     @GetMapping("/entrenamientos")
     public ResponseEntity<List<EntrenamientoDTO>> consultarEntrenamientos(
-            @Parameter(name = "token", description = "Token de autorizacion", required = true, example = "1234567890") @RequestParam("token") String token,
-            @Parameter(name = "fechaInicio", description = "Fecha de inicio para filtrar los entrenamientos", required = false, example = "12/12/2021") @RequestParam("fechaInicio") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
-            @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = false, example = "12/12/2021") @RequestParam("fechaFin") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin) {
+            @Parameter(name = "token", description = "Token de autorizacion", required = true, example = "1234567890") 
+            @RequestParam("token") String token,
+            @Parameter(name = "fechaInicio", description = "Fecha de inicio para filtrar los entrenamientos", required = false, example = "12/12/2021") 
+            @RequestParam(value = "fechaInicio", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
+            @Parameter(name = "fechaFin", description = "Fecha de fin para filtrar los entrenamientos", required = false, example = "12/12/2021") 
+            @RequestParam(value = "fechaFin", required = false) @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin) {
 
         // Usuario usuario = usuarioRepository.findById();
         Usuario usuario = usuarioService.usuarioPorToken(token);
