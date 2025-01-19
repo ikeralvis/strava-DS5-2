@@ -87,10 +87,6 @@ public class StravaService {
                 }
             }
         }
-        retosActivos.sort((r1, r2) -> r2.getFechaInicio().compareTo(r1.getFechaInicio()));
-        if (retosActivos.size() > 5) {
-            return retosActivos.subList(0, 5);
-        }
         return retosActivos;
 
     }
